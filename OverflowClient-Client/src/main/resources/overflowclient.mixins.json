@@ -5,7 +5,7 @@
   "client": [
     "MainMixin",
     "MinecraftMixin",
-    "screen.ScreenMixin",
+    "PanoramaRendererMixin",
     "screen.TitleScreenMixin"
   ],
   "injectors": {
