@@ -2,5 +2,13 @@ package com.nikoverflow.overflowclient;
 
 public class OverflowClient implements IOverflowAPI {
 
-    public void initialize() {}
+    private static OverflowClient INSTANCE;
+
+    public void initialize() {
+        INSTANCE = this;
+    }
+
+    public static OverflowClient getInstance() {
+        return INSTANCE;
+    }
 }

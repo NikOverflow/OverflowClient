@@ -11,16 +11,23 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${project.property("minecraft_version")}:${project.property("parchment_version")}@zip")
     })
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+    modImplementation("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.property("fabric_resource_loader_version")}")
 
     include(implementation(project(path = ":OverflowClient-API", configuration = "namedElements"))!!)
 }
 
 tasks {
     processResources {
-        inputs.property("version", project.version)
+        inputs.property("mod_version", project.version)
+        inputs.property("minecraft_version", project.property("minecraft_version"))
+        inputs.property("fabric_resource_loader_version", project.property("fabric_resource_loader_version"))
         filesMatching("fabric.mod.json") {
-            expand("version" to inputs.properties["version"])
+            expand(
+                "mod_version" to inputs.properties["mod_version"],
+                "minecraft_version" to inputs.properties["minecraft_version"],
+                "fabric_resource_loader_version" to inputs.properties["fabric_resource_loader_version"]
+            )
         }
     }
     jar {

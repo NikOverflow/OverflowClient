@@ -3,7 +3,10 @@
   "package": "com.nikoverflow.overflowclient.injection.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MainMixin"
+    "MainMixin",
+    "MinecraftMixin",
+    "screen.ScreenMixin",
+    "screen.TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

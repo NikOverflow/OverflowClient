@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "overflowclient",
-  "version": "${version}",
+  "version": "${mod_version}",
   "name": "OverflowClient",
   "description": "",
   "authors": [
@@ -18,8 +18,9 @@
     "overflowclient.mixins.json"
   ],
   "depends": {
+    "java": ">=21",
+    "minecraft": "${minecraft_version}",
     "fabricloader": ">=0.16.14",
-    "minecraft": "~1.21.5",
-    "java": ">=21"
+    "fabric-resource-loader-v0": "${fabric_resource_loader_version}"
   }
 }
