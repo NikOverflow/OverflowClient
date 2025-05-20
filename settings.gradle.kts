@@ -11,9 +11,3 @@ pluginManagement {
         id("fabric-loom") version "1.10-SNAPSHOT"
     }
 }
-
-dependencyResolutionManagement {
-    repositories {
-        maven("https://maven.parchmentmc.org")
-    }
-}

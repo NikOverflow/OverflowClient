@@ -13,6 +13,11 @@ java {
 
 subprojects {
     apply(plugin = "maven-publish")
+
+    repositories {
+        maven("https://maven.parchmentmc.org")
+    }
+
     publishing {
         repositories {
             maven {
