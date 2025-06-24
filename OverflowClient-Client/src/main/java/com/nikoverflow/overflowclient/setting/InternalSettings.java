@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class InternalSettings implements Settings {
 
-    private final Map<String, SettingGroup> settingGroups;
+    private final Map<String, InternalSettingGroup> settingGroups;
 
     public InternalSettings() {
         settingGroups = new HashMap<>();
@@ -22,14 +22,7 @@ public class InternalSettings implements Settings {
 
     @Override
     public SettingGroup group(String name) {
-        SettingGroup group;
-        if(settingGroups.containsKey(name)) {
-            group = settingGroups.get(name);
-        } else {
-            group = new InternalSettingGroup();
-            settingGroups.put(name, group);
-        }
-        return group;
+        return settingGroups.computeIfAbsent(name, key -> new InternalSettingGroup());
     }
 
     public void fromJson(JsonObject jsonObject) {
@@ -37,15 +30,15 @@ public class InternalSettings implements Settings {
             String group = entry.getKey();
             JsonElement jsonElement = entry.getValue();
             if(!jsonElement.isJsonObject()) continue;
-            InternalSettingGroup settingGroup = (InternalSettingGroup) settingGroups.get(group);
+            InternalSettingGroup settingGroup = settingGroups.get(group);
             if(settingGroup != null) settingGroup.fromJson(jsonElement.getAsJsonObject());
         }
     }
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        for(Map.Entry<String, SettingGroup> entry : settingGroups.entrySet()) {
-            if(((InternalSettingGroup) entry.getValue()).toJson().isEmpty()) continue;
-            jsonObject.add(entry.getKey(), ((InternalSettingGroup) entry.getValue()).toJson());
+        for(Map.Entry<String, InternalSettingGroup> entry : settingGroups.entrySet()) {
+            if(entry.getValue().toJson().isEmpty()) continue;
+            jsonObject.add(entry.getKey(), entry.getValue().toJson());
         }
         return jsonObject;
     }

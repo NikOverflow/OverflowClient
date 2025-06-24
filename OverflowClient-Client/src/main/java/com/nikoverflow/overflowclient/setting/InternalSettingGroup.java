@@ -14,14 +14,13 @@ public class InternalSettingGroup implements SettingGroup {
     }
 
     @Override
-    public <T> Setting<T> add(String name, SettingType<T> type, T defaultValue) {
+    public <T> Setting<T> addSetting(String name, SettingType<T> type, T defaultValue) {
         InternalSetting<T> setting = new InternalSetting<>(type, defaultValue);
         settings.put(name, setting);
         return setting;
     }
-
     @Override
-    public Setting<?> get(String name) {
+    public Setting<?> getSetting(String name) {
         return settings.get(name);
     }
 
