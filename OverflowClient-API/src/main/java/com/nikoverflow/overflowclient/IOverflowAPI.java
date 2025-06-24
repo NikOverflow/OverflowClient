@@ -1,3 +1,8 @@
 package com.nikoverflow.overflowclient;
 
-public interface IOverflowAPI {}
+import com.nikoverflow.overflowclient.module.IModuleManager;
+
+public interface IOverflowAPI {
+
+    IModuleManager getModuleManager();
+}
