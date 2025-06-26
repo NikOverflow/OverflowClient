@@ -25,6 +25,26 @@ public class SettingTypes {
             return jsonElement.getAsInt();
         }
     };
+    public static final SettingType<Float> FLOAT = new SettingType<>() {
+        @Override
+        public JsonElement serialize(Float value) {
+            return new JsonPrimitive(value);
+        }
+        @Override
+        public Float deserialize(JsonElement jsonElement) {
+            return jsonElement.getAsFloat();
+        }
+    };
+    public static final SettingType<Double> DOUBLE = new SettingType<>() {
+        @Override
+        public JsonElement serialize(Double value) {
+            return new JsonPrimitive(value);
+        }
+        @Override
+        public Double deserialize(JsonElement jsonElement) {
+            return jsonElement.getAsDouble();
+        }
+    };
     public static final SettingType<Boolean> BOOLEAN = new SettingType<>() {
         @Override
         public JsonElement serialize(Boolean value) {
