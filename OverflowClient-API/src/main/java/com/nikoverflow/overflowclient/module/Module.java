@@ -9,7 +9,6 @@ public abstract class Module implements EventListener {
     private boolean enabled = false;
     private Settings settings;
 
-    public void init() {}
     public void onEnable() {}
     public void onDisable() {}
 

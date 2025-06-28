@@ -3,7 +3,6 @@ package com.nikoverflow.overflowclient.module;
 import com.google.gson.JsonObject;
 import com.nikoverflow.overflowclient.setting.InternalSettings;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,15 +16,6 @@ public class ModuleManager implements IModuleManager {
 
     @Override
     public void addModule(Module module) {
-        try {
-            Field settingsField = Module.class.getDeclaredField("settings");
-            settingsField.setAccessible(true);
-            settingsField.set(module, new InternalSettings());
-            settingsField.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        module.init();
         modules.put(module.getName(), module);
     }
     @Override

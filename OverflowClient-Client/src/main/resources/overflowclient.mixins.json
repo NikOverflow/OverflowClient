@@ -3,6 +3,7 @@
   "package": "com.nikoverflow.overflowclient.injection.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "api.ModuleMixin",
     "MainMixin",
     "MinecraftMixin",
     "PanoramaRendererMixin",
