@@ -6,7 +6,7 @@ import java.util.*;
 
 public class EventManager implements IEventManager {
 
-    private final Map<Class<? extends Event>, List<RegisteredHandler>> registeredHandlers;
+    private final Map<Class<? extends Event>, Map<EventPriority, List<RegisteredHandler>>> registeredHandlers;
 
     public EventManager() {
         registeredHandlers = new HashMap<>();
@@ -18,32 +18,28 @@ public class EventManager implements IEventManager {
             if(!method.isAnnotationPresent(EventHandler.class) || method.getParameterCount() != 1) continue;
             Class<?> parameter = method.getParameterTypes()[0];
             if(!Event.class.isAssignableFrom(parameter)) continue;
-            Class<? extends Event> eventClass = parameter.asSubclass(Event.class);
             EventHandler eventHandler = method.getAnnotation(EventHandler.class);
-            registeredHandlers.computeIfAbsent(eventClass, k -> new ArrayList<>()).add(new RegisteredHandler(listener, method, eventHandler.priority(), eventHandler.ignoreCancelled()));
-            registeredHandlers.get(eventClass).sort(Comparator.comparing(registeredHandler -> registeredHandler.priority));
+            registeredHandlers.computeIfAbsent(parameter.asSubclass(Event.class), clazz -> new EnumMap<>(EventPriority.class)).computeIfAbsent(eventHandler.priority(), priority -> new ArrayList<>()).add(new RegisteredHandler(listener, method, eventHandler.priority(), eventHandler.ignoreCancelled()));
         }
     }
     @Override
     public void unregisterEvents(EventListener listener) {
-        for(List<RegisteredHandler> handlerList : registeredHandlers.values()) {
-            handlerList.removeIf(registeredHandler -> registeredHandler.listener.equals(listener));
-        }
-        registeredHandlers.entrySet().removeIf(registeredHandler -> registeredHandler.getValue().isEmpty());
+        for(Map<EventPriority, List<RegisteredHandler>> handlerList : registeredHandlers.values()) handlerList.values().forEach(registeredHandlers -> registeredHandlers.removeIf(registeredHandler -> registeredHandler.listener.equals(listener)));
+        registeredHandlers.entrySet().removeIf(entry -> entry.getValue().values().stream().allMatch(List::isEmpty));
     }
 
     @Override
     public void callEvent(Event event) {
-        List<RegisteredHandler> handlerList = registeredHandlers.get(event.getClass());
+        Map<EventPriority, List<RegisteredHandler>> handlerList = registeredHandlers.get(event.getClass());
         if(handlerList == null) return;
-        handlerList.forEach(registeredHandler -> {
+        handlerList.forEach((eventPriority, registeredHandlers) -> registeredHandlers.forEach(registeredHandler -> {
+            if(event instanceof Cancellable cancellable && cancellable.isCancelled() && registeredHandler.ignoreCancelled) return;
             try {
-                if(event instanceof Cancellable cancellable && cancellable.isCancelled() && registeredHandler.ignoreCancelled) return;
                 registeredHandler.method.invoke(registeredHandler.listener, event);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
-        });
+        }));
     }
 
     private record RegisteredHandler(EventListener listener, Method method, EventPriority priority, boolean ignoreCancelled) {}
