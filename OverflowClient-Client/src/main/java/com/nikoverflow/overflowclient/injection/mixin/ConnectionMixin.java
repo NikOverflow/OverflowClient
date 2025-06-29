@@ -22,8 +22,8 @@ public class ConnectionMixin {
     private void overflow$sendPacket(Packet<?> packet, PacketSendListener sendListener, boolean flush, CallbackInfo ci) {
         PacketSendEvent event = new PacketSendEvent(packet);
         OverflowClient.getInstance().getEventManager().callEvent(event);
-        this.packet.set(event.getPacket());
         if(event.isCancelled()) ci.cancel();
+        this.packet.set(event.getPacket());
     }
 
     @ModifyArg(method = "sendPacket", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;doSendPacket(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;Z)V"))
