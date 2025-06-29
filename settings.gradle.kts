@@ -8,6 +8,6 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id("fabric-loom") version extra.get("loom_version").toString()
+        id("fabric-loom") version extra.get("fabric_loom_version").toString()
     }
 }
