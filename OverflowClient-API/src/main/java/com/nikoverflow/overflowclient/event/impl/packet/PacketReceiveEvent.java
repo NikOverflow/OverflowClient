@@ -4,12 +4,12 @@ import com.nikoverflow.overflowclient.event.Cancellable;
 import com.nikoverflow.overflowclient.event.Event;
 import net.minecraft.network.protocol.Packet;
 
-public class PacketEvent extends Event implements Cancellable {
+public class PacketReceiveEvent extends Event implements Cancellable {
 
     private boolean cancelled;
     private Packet<?> packet;
 
-    public PacketEvent(Packet<?> packet) {
+    public PacketReceiveEvent(Packet<?> packet) {
         cancelled = false;
         this.packet = packet;
     }
@@ -18,6 +18,7 @@ public class PacketEvent extends Event implements Cancellable {
     public void cancel() {
         cancelled = true;
     }
+
     @Override
     public boolean isCancelled() {
         return cancelled;
@@ -26,6 +27,7 @@ public class PacketEvent extends Event implements Cancellable {
     public void setPacket(Packet<?> packet) {
         this.packet = packet;
     }
+
     public Packet<?> getPacket() {
         return packet;
     }
