@@ -33,14 +33,17 @@ public class ConnectionMixin {
         receivedPacket.remove();
     }
 
-    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true, order = 999)
     private void overflow$channelRead0(ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
         if(packet instanceof ClientboundBundlePacket clientboundBundlePacket) {
             List<Packet<? super ClientGamePacketListener>> newPackets = new ArrayList<>();
             for(Packet<? super ClientGamePacketListener> subPacket : clientboundBundlePacket.subPackets()) {
                 PacketReceiveEvent event = new PacketReceiveEvent(subPacket);
                 OverflowClient.getInstance().getEventManager().callEvent(event);
-                if(!event.isCancelled()) newPackets.add((Packet<? super ClientGamePacketListener>) event.getPacket());
+                if(event.isCancelled()) continue;
+                @SuppressWarnings("unchecked")
+                Packet<? super ClientGamePacketListener> convertedPacket = (Packet<? super ClientGamePacketListener>) event.getPacket();
+                newPackets.add(convertedPacket);
             }
             if(newPackets.isEmpty()) ci.cancel();
             receivedPacket.set(new ClientboundBundlePacket(newPackets));
@@ -61,7 +64,7 @@ public class ConnectionMixin {
         }
     }
 
-    @Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true, order = 999)
     private void overflow$sendPacket(Packet<?> packet, ChannelFutureListener sendListener, boolean flush, CallbackInfo ci) {
         PacketSendEvent event = new PacketSendEvent(packet);
         OverflowClient.getInstance().getEventManager().callEvent(event);
